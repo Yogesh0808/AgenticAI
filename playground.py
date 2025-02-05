@@ -1,11 +1,18 @@
-#It will have Multiple Agents not a Single Agents.To Get details of the Search, Stock.
+import phi.api
 from phi.agent import Agent
 from phi.model.groq import Groq  #AI Model
 from phi.tools.yfinance import YFinanceTools
 from phi.tools.duckduckgo import DuckDuckGo
+from phi.playground import serve_playground_app
 
 from dotenv import load_dotenv
 load_dotenv()
+
+import os 
+import phi
+from phi.playground import Playground
+
+phi.api=os.getenv("PHI_API_KEY")
 
 web_search_agent=Agent(
     name="Web Search Agent",
@@ -37,4 +44,7 @@ multi_ai_agent = Agent(
     markdown=True
 )
 
-multi_ai_agent.print_response("Summarize analyst recommendation and share the latest news for NVDA", stream=True)
+app=Playground(agents=[financial_agent,web_search_agent]).get_app()
+
+if __name__=="__main__":
+    serve_playground_app("playground:app",reload=True)
